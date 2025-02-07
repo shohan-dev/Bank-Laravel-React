@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -11,12 +12,13 @@ Route::get('/', function () {
 });
 
 Route::get('register', [AuthController::class, 'showRegister'])->name('Auth.Register');
-Route::get('login', [AuthController::class, 'showLogin'])->name('Auth.Login');
-
 Route::post('register', [AuthController::class, 'register'])->name('Auth.Register');
 
-Route::post('data', [AuthController::class,'data'])->name('data');
-Route::get('data', [AuthController::class,'showdata'])->name('data');
+Route::get('login', [AuthController::class, 'showLogin'])->name('Auth.Login');
+Route::post('login', [AuthController::class,'login'])->name('Auth.Login');
+
+
+Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
 

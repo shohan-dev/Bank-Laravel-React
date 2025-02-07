@@ -1,80 +1,67 @@
+import { useForm } from "@inertiajs/react";
 import React, { useState } from "react";
 
 const LoginPage: React.FC = () => {
-    const [credentials, setCredentials] = useState({
+    const { data, setData, post, processing, errors } = useForm({
         email: "",
         password: "",
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setCredentials({
-            ...credentials,
-            [name]: value,
-        });
+        setData(name as "email" | "password", value); // This updates the form data using Inertia's useForm method
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!credentials.email || !credentials.password) {
-            alert("Please fill in both fields!");
-        } else {
-            alert("Login Successful!");
-            // Handle login logic here (e.g., sending the data to an API)
-        }
+        // Send the data to the backend via POST
+        post("/login"); // Replace with your actual route for login
     };
 
     return (
-        <div style={{ backgroundColor: "#f3f4f6", minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <div style={{ backgroundColor: "white", padding: "2rem 3rem", borderRadius: "0.375rem", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", width: "100%", maxWidth: "400px" }}>
-                <h2 style={{ fontSize: "2rem", fontWeight: "bold", textAlign: "center" }}>Login</h2>
+        <div className="bg-gray-100 min-h-screen flex justify-center items-center">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+                <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
                 <form onSubmit={handleSubmit}>
-                    <div style={{ marginBottom: "1.25rem" }}>
-                        <label htmlFor="email" style={{ display: "block", fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem" }}>Email Address</label>
+                    <div className="mb-6">
+                        <label htmlFor="email" className="block text-sm font-semibold mb-2">Email Address</label>
                         <input
                             type="email"
                             id="email"
                             name="email"
-                            value={credentials.email}
+                            value={data.email}
                             onChange={handleChange}
-                            style={{ width: "100%", padding: "0.75rem", borderRadius: "0.375rem", border: "1px solid #d1d5db", fontSize: "1rem" }}
+                            className="w-full p-3 border border-gray-300 rounded-lg text-sm"
                         />
+                        {errors.email && <span className="text-red-500 text-sm">{errors.email}</span>}
                     </div>
-                    <div style={{ marginBottom: "1.25rem" }}>
-                        <label htmlFor="password" style={{ display: "block", fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem" }}>Password</label>
+
+                    <div className="mb-6">
+                        <label htmlFor="password" className="block text-sm font-semibold mb-2">Password</label>
                         <input
                             type="password"
                             id="password"
                             name="password"
-                            value={credentials.password}
+                            value={data.password}
                             onChange={handleChange}
-                            style={{ width: "100%", padding: "0.75rem", borderRadius: "0.375rem", border: "1px solid #d1d5db", fontSize: "1rem" }}
+                            className="w-full p-3 border border-gray-300 rounded-lg text-sm"
                         />
+                        {errors.password && <span className="text-red-500 text-sm">{errors.password}</span>}
                     </div>
+
                     <button
                         type="submit"
-                        style={{
-                            width: "100%",
-                            backgroundColor: "#2563eb",
-                            color: "white",
-                            padding: "0.75rem",
-                            borderRadius: "0.375rem",
-                            border: "none",
-                            fontSize: "1rem",
-                            fontWeight: "600",
-                            cursor: "pointer",
-                            transition: "background-color 0.3s",
-                        }}
-                        onMouseOver={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = "#1d4ed8")}
-                        onMouseOut={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = "#2563eb")}
+                        disabled={processing}
+                        className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold text-sm hover:bg-blue-700 transition-colors"
                     >
-                        Login
+                        {processing ? "Logging in..." : "Login"}
                     </button>
                 </form>
-                <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
-                    <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>
+
+                <div className="text-center mt-6">
+                    <p className="text-sm text-gray-600">
                         Don't have an account?{" "}
-                        <a href="register" style={{ color: "#2563eb", textDecoration: "none" }}>
+                        <a href="register" className="text-blue-600 hover:underline">
                             Register
                         </a>
                     </p>
