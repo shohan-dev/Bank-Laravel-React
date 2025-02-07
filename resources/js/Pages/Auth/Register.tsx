@@ -1,121 +1,104 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { useForm } from "@inertiajs/react";
+import React from "react";
 
-export default function Register() {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        name: '',
-        email: '',
-        password: '',
-        password_confirmation: '',
+
+const RegisterPage: React.FC = () => {
+    const { data, setData, post, processing, errors } = useForm({
+        fullName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
     });
 
-    const submit: FormEventHandler = (e) => {
-        e.preventDefault();
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setData(name as "fullName" | "email" | "password" | "confirmPassword", value);
+    };
 
-        post(route('register'), {
-            onFinish: () => reset('password', 'password_confirmation'),
-        });
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        post("/register");
+        console.log("Submitted!");
     };
 
     return (
-        <GuestLayout>
-            <Head title="Register" />
-
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="name" value="Name" />
-
-                    <TextInput
-                        id="name"
-                        name="name"
-                        value={data.name}
-                        className="mt-1 block w-full"
-                        autoComplete="name"
-                        isFocused={true}
-                        onChange={(e) => setData('name', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.name} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
-                        type="email"
-                        name="email"
-                        value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        onChange={(e) => setData('email', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                        required
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel
-                        htmlFor="password_confirmation"
-                        value="Confirm Password"
-                    />
-
-                    <TextInput
-                        id="password_confirmation"
-                        type="password"
-                        name="password_confirmation"
-                        value={data.password_confirmation}
-                        className="mt-1 block w-full"
-                        autoComplete="new-password"
-                        onChange={(e) =>
-                            setData('password_confirmation', e.target.value)
-                        }
-                        required
-                    />
-
-                    <InputError
-                        message={errors.password_confirmation}
-                        className="mt-2"
-                    />
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    <Link
-                        href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        <div style={{ backgroundColor: "#f3f4f6", minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <div style={{ backgroundColor: "white", padding: "2rem 3rem", borderRadius: "0.375rem", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", width: "100%", maxWidth: "400px" }}>
+                <h2 style={{ fontSize: "2rem", fontWeight: "bold", textAlign: "center" }}>Register</h2>
+                <form onSubmit={handleSubmit} >
+                    <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''} />
+                    <div style={{ marginBottom: "1.25rem" }}>
+                        <label htmlFor="fullName" style={{ display: "block", fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem" }}>Full Name</label>
+                        <input
+                            type="text"
+                            id="fullName"
+                            name="fullName"
+                            value={data.fullName}
+                            onChange={handleChange}
+                            style={{ width: "100%", padding: "0.75rem", borderRadius: "0.375rem", border: "1px solid #d1d5db", fontSize: "1rem" }}
+                        />
+                    </div>
+                    <div style={{ marginBottom: "1.25rem" }}>
+                        <label htmlFor="email" style={{ display: "block", fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem" }}>Email Address</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            value={data.email}
+                            onChange={handleChange}
+                            style={{ width: "100%", padding: "0.75rem", borderRadius: "0.375rem", border: "1px solid #d1d5db", fontSize: "1rem" }}
+                        />
+                    </div>
+                    <div style={{ marginBottom: "1.25rem" }}>
+                        <label htmlFor="password" style={{ display: "block", fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem" }}>Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            value={data.password}
+                            onChange={handleChange}
+                            style={{ width: "100%", padding: "0.75rem", borderRadius: "0.375rem", border: "1px solid #d1d5db", fontSize: "1rem" }}
+                        />
+                    </div>
+                    <div style={{ marginBottom: "1.25rem" }}>
+                        <label htmlFor="confirmPassword" style={{ display: "block", fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem" }}>Confirm Password</label>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            value={data.confirmPassword}
+                            onChange={handleChange}
+                            style={{ width: "100%", padding: "0.75rem", borderRadius: "0.375rem", border: "1px solid #d1d5db", fontSize: "1rem" }}
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        style={{
+                            width: "100%",
+                            backgroundColor: "#2563eb",
+                            color: "white",
+                            padding: "0.75rem",
+                            borderRadius: "0.375rem",
+                            border: "none",
+                            fontSize: "1rem",
+                            fontWeight: "600",
+                            cursor: "pointer",
+                            transition: "background-color 0.3s",
+                        }}
+                        onMouseOver={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = "#1d4ed8")}
+                        onMouseOut={(e) => ((e.target as HTMLButtonElement).style.backgroundColor = "#2563eb")}
                     >
-                        Already registered?
-                    </Link>
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
                         Register
-                    </PrimaryButton>
+                    </button>
+                </form>
+                <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+                    <p style={{ fontSize: "0.875rem", color: "#6b7280" }}>Already have an account? <a href="/login" style={{ color: "#2563eb", textDecoration: "none" }}>Login</a></p>
                 </div>
-            </form>
-        </GuestLayout>
+            </div>
+        </div>
     );
-}
+};
+
+export default RegisterPage;
+// Remove the unused post function
+
